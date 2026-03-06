@@ -1,0 +1,147 @@
+{% extends "admin/baseadmin.html" %}
+{% block title %}Contenu / {% if content %}Modifier{% else %}Ajouter{% endif %} {{ content_type|capitalize }}{% endblock %}
+{% block name %}Contenu / {% if content %}Modifier{% else %}Ajouter{% endif %} {{ content_type|capitalize }}{% endblock %}
+
+{% block contentadmin %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+        <span class="text-muted fw-light">Contenu /</span> {% if content %}Modifier{% else %}Ajouter{% endif %} {{ content_type|capitalize }}
+    </h4>
+
+    <form action="{% if content %}{{ url_for('admin.content_form', id=content.id) }}{% else %}{{ url_for('admin.content_form', type=content_type) }}{% endif %}" 
+          method="POST" enctype="multipart/form-data">
+        
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Titre</label>
+                            <input type="text" name="title" class="form-control" value="{{ content.title if content else '' }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="6" style="white-space: pre-wrap;">{{ content.description if content else '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                {% if content and photos %}
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Gestion de la Galerie</h5>
+                        <small class="text-muted">Cochez <span class="text-danger">Supprimer</span> pour retirer, ou <span class="text-primary">Couverture</span> pour l'affiche.</small>
+                    </div>
+                    <div class="card-body mt-3">
+                        <div class="row g-3">
+                            {% for photo in photos %}
+                            <div class="col-6 col-md-4 col-lg-3 photo-item" id="photo-container-{{ photo.id }}">
+                                <div class="card h-100 border position-relative overflow-hidden">
+                                    <img src="{{ url_for('static', filename=photo.thumbnail) }}" class="card-img-top preview-img" style="height: 120px; object-fit: cover;">
+                                    
+                                    <div class="position-absolute top-0 end-0 p-1">
+                                        <input type="checkbox" name="delete_photos" value="{{ photo.id }}" 
+                                               class="form-check-input bg-danger border-danger delete-checkbox" 
+                                               onchange="toggleDeleteEffect('{{ photo.id }}')">
+                                    </div>
+
+                                    <div class="card-footer p-2 text-center bg-white">
+                                        <div class="form-check d-inline-block">
+                                            <input class="form-check-input" type="radio" name="cover_image_id" 
+                                                   value="{{ photo.id }}" id="cover{{ photo.id }}"
+                                                   {% if content.cover_image_id == photo.id %}checked{% endif %}>
+                                            <label class="form-check-label small" for="cover{{ photo.id }}">Couverture</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-5">
+                <div class="card mb-4">
+                    <div class="card-header border-bottom">
+                        <h5 class="mb-0 text-primary"><i class="bx bx-cog me-2"></i>Paramètres</h5>
+                    </div>
+                    <div class="card-body mt-3">
+                        <div class="p-3 rounded bg-light">
+                            <label class="form-label d-block fw-bold mb-2">Statut de publication</label>
+                            <div class="form-check form-switch form-switch-lg">
+                                <input class="form-check-input" type="checkbox" id="is_published" name="is_published" 
+                                       style="width: 3em; height: 1.5em; cursor: pointer;"
+                                       {% if content and content.is_published %}checked{% endif %}
+                                       onchange="updateStatusLabel(this)">
+                                <label class="form-check-label ms-2 fw-bold" for="is_published" id="status-label">
+                                    {% if content and content.is_published %}
+                                        <span class="text-success">Publié</span>
+                                    {% else %}
+                                        <span class="text-secondary">Brouillon</span>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                Un contenu en "Brouillon" ne sera pas visible sur le site public.
+                            </small>
+                        </div>
+
+                        {% if content_type == 'product' %}
+                        <div class="mb-3">
+                            <label class="form-label">Prix (€)</label>
+                            <input type="number" step="0.01" name="price" class="form-control" value="{{ content.price if content else '' }}">
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Ajouter des photos</label>
+                            <input type="file" name="images" class="form-control" multiple accept="image/*">
+                        </div>
+
+                        <hr>
+                        <button type="submit" class="btn btn-primary w-100 mb-2 py-2">
+                            <i class="bx bx-save me-1"></i> Enregistrer les modifications
+                        </button>
+                        <a href="{{ url_for('admin.content_list', type=content_type) }}" class="btn btn-outline-secondary w-100">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Effet quand on coche "Supprimer" */
+    .delete-active img {
+        filter: grayscale(1) sepia(1) hue-rotate(-50deg) opacity(0.5);
+        border: 2px solid red;
+    }
+    .delete-active {
+        background-color: #ffeeee;
+    }
+    /* Switch plus visible */
+    .form-switch-lg .form-check-input {
+        width: 3.5rem !important;
+        height: 1.75rem !important;
+    }
+</style>
+
+<script>
+function toggleDeleteEffect(id) {
+    const container = document.getElementById('photo-container-' + id);
+    container.classList.toggle('delete-active');
+}
+
+// Met à jour le texte du label dynamiquement quand on clique sur le switch
+function updateStatusLabel(checkbox) {
+    const label = document.getElementById('status-label');
+    if (checkbox.checked) {
+        label.innerHTML = '<span class="text-success">Publié</span>';
+    } else {
+        label.innerHTML = '<span class="text-secondary">Brouillon</span>';
+    }
+}
+</script>
+{% endblock %}

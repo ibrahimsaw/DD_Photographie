@@ -1,0 +1,11 @@
+{% extends "basehome.html" %}
+
+{% block title %}Elements{% endblock %}
+
+{% block contenthome %}
+    <div class="container">
+        <h1 class="mt-5">Elements</h1>
+        <p>Voici quelques éléments de ma collection.</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Retour à l'accueil</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends "admin/baseadmin.html" %}
+
+{% block contentadmin %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Configuration /</span> Profil & Paramètres</h4>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="nav-align-top mb-4">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-profile">
+                                <i class="bx bx-user me-1"></i> Identité & Contact
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-social">
+                                <i class="bx bx-share-alt me-1"></i> Réseaux Sociaux
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-seo">
+                                <i class="bx bx-globe me-1"></i> SEO & Analytics
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="navs-profile" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom Complet</label>
+                                    <input type="text" name="name" class="form-control" value="{{ setting.name or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Titre Professionnel</label>
+                                    <input type="text" name="title" class="form-control" value="{{ setting.title or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email de contact</label>
+                                    <input type="email" name="email" class="form-control" value="{{ setting.email or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Téléphone</label>
+                                    <input type="text" name="phone" class="form-control" value="{{ setting.phone or '' }}">
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Adresse</label>
+                                    <input type="text" name="address" class="form-control" value="{{ setting.address or '' }}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Ville</label>
+                                    <input type="text" name="city" class="form-control" value="{{ setting.city or '' }}">
+                                </div>
+                                
+                                <div class="col-12 mb-4">
+                                    <label class="form-label d-block">Photo de profil</label>
+                                    <div class="d-flex align-items-center gap-4">
+                                        {% if setting.about_image %}
+                                            <img src="{{ url_for('static', filename=setting.about_image) }}" 
+                                                id="imagePreview" class="rounded border shadow-sm" height="120" width="120" style="object-fit: cover;">
+                                        {% else %}
+                                            <div id="imagePlaceholder" class="rounded border bg-light d-flex align-items-center justify-content-center" style="height:120px; width:120px;">
+                                                <i class="bx bx-user-circle display-4 text-muted"></i>
+                                            </div>
+                                            <img id="imagePreview" class="rounded border shadow-sm d-none" height="120" width="120" style="object-fit: cover;">
+                                        {% endif %}
+                                        <div>
+                                            <input type="file" name="about_image" id="imageInput" class="form-control mb-1" accept="image/*">
+                                            <small class="text-muted d-block">JPG, PNG ou WebP.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Biographie / À propos</label>
+                                    <textarea name="bio" class="form-control" rows="4">{{ setting.bio or '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="navs-social" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Instagram</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bxl-instagram"></i></span>
+                                        <input type="text" name="instagram" class="form-control" value="{{ setting.instagram or '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Facebook</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bxl-facebook"></i></span>
+                                        <input type="text" name="facebook" class="form-control" value="{{ setting.facebook or '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Twitter / X</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bxl-twitter"></i></span>
+                                        <input type="text" name="twitter" class="form-control" value="{{ setting.twitter or '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">YouTube</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bxl-youtube"></i></span>
+                                        <input type="text" name="youtube" class="form-control" value="{{ setting.youtube or '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Behance</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bxl-behance"></i></span>
+                                        <input type="text" name="behance" class="form-control" value="{{ setting.behance or '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">LinkedIn</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bxl-linkedin"></i></span>
+                                        <input type="text" name="linkedin" class="form-control" value="{{ setting.linkedin or '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="navs-seo" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Meta Description (SEO)</label>
+                                    <textarea name="meta_description" class="form-control">{{ setting.meta_description or '' }}</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Google Analytics ID</label>
+                                    <input type="text" name="google_analytics" class="form-control" placeholder="G-XXXXXXX" value="{{ setting.google_analytics or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Texte du Footer</label>
+                                    <input type="text" name="footer_text" class="form-control" value="{{ setting.footer_text or '' }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bx bx-save me-1"></i> Sauvegarder tout
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('imageInput').onchange = evt => {
+        const [file] = document.getElementById('imageInput').files
+        if (file) {
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('imagePlaceholder');
+            preview.src = URL.createObjectURL(file);
+            preview.classList.remove('d-none');
+            if (placeholder) placeholder.classList.add('d-none');
+        }
+    }
+</script>
+{% endblock %}

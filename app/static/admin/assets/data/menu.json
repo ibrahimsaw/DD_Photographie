@@ -1,0 +1,93 @@
+{
+  "_comment": "Menu organisé par sections logiques pour DD Photographie",
+  "brand": {
+    "name": "DD Photographie",
+    "logo": "assets/img/logo.png",
+    "home": "admin.dashboard"
+  },
+
+  "menu": [
+    {
+      "type": "item",
+      "title": "Tableau de Bord",
+      "icon": "bx bx-home-circle",
+      "path": "admin.dashboard",
+      "name": "dashboard"
+    },
+
+    { "type": "header", "title": "Gestion de Contenu" },
+    {
+      "type": "item",
+      "title": "Galerie Photos",
+      "icon": "bx bx-images",
+      "path": "admin.photos",
+      "name": "photos"
+    },
+    {
+      "type": "item",
+      "title": "Catégories",
+      "icon": "bx bx-folder-open",
+      "path": "admin.categories",
+      "name": "categories"
+    },
+    {
+      "type": "parent",
+      "title": "Blog & Boutique",
+      "icon": "bx bx-layout",
+      "children": [
+        {
+          "title": "Liste des contenus",
+          "path": "admin.content_list",
+          "name": "content_list"
+        },
+        {
+          "title": "Nouvel Article",
+          "path": "admin.content_form",
+          "name": "content_form"
+        }
+      ]
+    },
+
+    { "type": "header", "title": "Configuration Studio" },
+    {
+      "type": "item",
+      "title": "Profil Photographe",
+      "icon": "bx bx-user-pin",
+      "path": "admin.settings", 
+      "name": "settings"
+    },
+    {
+      "type": "parent",
+      "title": "Équipe",
+      "icon": "bx bx-group",
+      "children": [
+        {
+          "title": "Liste Photographes",
+          "path": "admin.photographers",
+          "name": "photographers"
+        },
+        {
+          "title": "Ajouter un membre",
+          "path": "admin.photographer_form",
+          "name": "photographer_form"
+        }
+      ]
+    },
+
+    { "type": "header", "title": "Système" },
+    {
+      "type": "item",
+      "title": "Créer Admin",
+      "icon": "bx bx-shield-quarter",
+      "path": "admin.create_admin",
+      "name": "create_admin"
+    },
+    {
+      "type": "item",
+      "title": "Déconnexion",
+      "icon": "bx bx-power-off text-danger",
+      "path": "admin.logout",
+      "name": "logout"
+    }
+  ]
+}

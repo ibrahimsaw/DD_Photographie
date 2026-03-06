@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr" class="light-style layout-menu-fixed" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>DD Photographie | {% block title %}Admin{% endblock %}</title>
+
+    <link rel="icon" href="{{ url_for('static', filename='img/core-img/logo.ico') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/assets/vendor/fonts/boxicons.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/assets/css/demo.css') }}" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
+
+    <script src="{{ url_for('static', filename='admin/assets/vendor/js/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin/assets/js/config.js') }}"></script>
+</head>
+
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="app-brand demo">
+                    <a href="{{ url_for('admin.dashboard') }}" class="app-brand-link">
+                        <span class="app-brand-logo demo">
+                            <img src="{{ url_for('static', filename='img/core-img/logo.png') }}" width="30">
+                        </span>
+                        <span class="app-brand-text demo menu-text fw-bolder ms-2">DD Photographie</span>
+                    </a>
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                    </a>
+                </div>
+
+                <div class="menu-inner-shadow"></div>
+
+                <ul class="menu-inner py-1">
+                  {% for item in admin_menu %}
+                      
+                      {# --- CAS 1 : EN-TÊTE (HEADER) --- #}
+                      {% if item.type == 'header' %}
+                          <li class="menu-header small text-uppercase">
+                              <span class="menu-header-text">{{ item.title }}</span>
+                          </li>
+
+                      {# --- CAS 2 : LIEN SIMPLE --- #}
+                      {% elif item.type == 'link' %}
+                          <li class="menu-item {% if request.endpoint == item.route %}active{% endif %}">
+                              <a href="{{ url_for(item.route) }}" class="menu-link">
+                                  <i class="menu-icon tf-icons bx {{ item.icon }}"></i>
+                                  <div>{{ item.title }}</div>
+                              </a>
+                          </li>
+
+                      {# --- CAS 3 : MENU DÉROULANT (DROPDOWN) --- #}
+                      {% elif item.type == 'dropdown' %}
+                          {% set is_open = false %}
+                          {# On vérifie si un des sous-éléments est la page active #}
+                          {% for sub in item.sub_menu %}
+                              {% if request.endpoint == sub.route and request.view_args.get('type') == sub.params.get('type') %}
+                                  {% set is_open = true %}
+                              {% endif %}
+                          {% endfor %}
+
+                          <li class="menu-item {% if is_open %}active open{% endif %}">
+                              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                  <i class="menu-icon tf-icons bx {{ item.icon }}"></i>
+                                  <div>{{ item.title }}</div>
+                              </a>
+                              <ul class="menu-sub">
+                                  {% for sub in item.sub_menu %}
+                                      <li class="menu-item {% if request.endpoint == sub.route and request.view_args.get('type') == sub.params.get('type') %}active{% endif %}">
+                                          <a href="{{ url_for(sub.route, **sub.params if sub.params else {}) }}" class="menu-link">
+                                              <div>{{ sub.title }}</div>
+                                          </a>
+                                      </li>
+                                  {% endfor %}
+                              </ul>
+                          </li>
+                      {% endif %}
+
+                  {% endfor %}
+
+                  {# Bouton Déconnexion (statique car particulier) #}
+                  <li class="menu-item mt-auto">
+                      <a href="{{ url_for('admin.logout') }}" class="menu-link text-danger">
+                          <i class="menu-icon tf-icons bx bx-power-off"></i>
+                          <div>Déconnexion</div>
+                      </a>
+                  </li>
+              </ul>
+            </aside>
+
+            <div class="layout-page">
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                            <i class="bx bx-menu bx-sm"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="navbar-nav-title-wrapper d-flex align-items-center justify-content-center" 
+                        style="position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; width: auto;">
+                        <h2 class="mb-0 fw-bolder text-dark" 
+                            style="font-family: 'Public Sans', sans-serif; 
+                                  letter-spacing: -0.5px; 
+                                  text-transform: capitalize;
+                                  font-size: 1.5rem;
+                                  background: linear-gradient(to right, #696cff);
+                                  -webkit-background-clip: text;
+                                  -webkit-text-fill-color: transparent;">
+                            {% block name %}Tableau de Bord{% endblock %}
+                        </h2>
+                    </div>
+
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        {% if site_settings.about_image %}
+                                            <img src="{{ url_for('static', filename=site_settings.about_image) }}" class="w-px-40 h-auto rounded-circle" style="object-fit: cover; height: 40px !important;">
+                                        {% else %}
+                                            <img src="{{ url_for('static', filename='admin/assets/img/avatars/1.png') }}" class="w-px-40 h-auto rounded-circle">
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ url_for('admin.settings') }}">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img src="{{ url_for('static', filename=site_settings.about_image if site_settings.about_image else 'admin/assets/img/avatars/1.png') }}" class="w-px-40 h-auto rounded-circle" style="object-fit: cover; height: 40px !important;">
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-semibold d-block">{{ site_settings.name or 'Admin' }}</span>
+                                                    <small class="text-muted">{{ site_settings.title or 'Photographe' }}</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><div class="dropdown-divider"></div></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('admin.logout') }}"><i class="bx bx-power-off me-2"></i> Déconnexion</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                          {% if messages %}
+                            {% for category, message in messages %}
+                              <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                            {% endfor %}
+                          {% endif %}
+                        {% endwith %}
+
+                        {% block contentadmin %}{% endblock %}
+                    </div>
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='admin/assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin/assets/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin/assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin/assets/vendor/js/menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='admin/assets/js/main.js') }}"></script>
+</body>
+</html>

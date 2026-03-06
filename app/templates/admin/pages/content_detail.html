@@ -1,0 +1,135 @@
+{% extends "admin/baseadmin.html" %}
+{% block title %}Détail | {{ item.title }}{% endblock %}
+{% block name %}Détail | {{ item.title }}{% endblock %}
+{% block contentadmin %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold py-3 mb-0">
+            <span class="text-muted fw-light">Détail /</span> {{ item.title }}
+        </h4>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('admin.content_list', type=item.type) }}" class="btn btn-outline-secondary">
+                <i class="bx bx-chevron-left"></i> Retour
+            </a>
+            <a href="{{ url_for('admin.content_form', id=item.id) }}" class="btn btn-primary">
+                <i class="bx bx-edit-alt me-1"></i> Modifier
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="user-avatar-section">
+                        <div class="d-flex align-items-center flex-column">
+                            {% if item.cover_photo %}
+                                <img class="img-fluid rounded my-4" src="{{ url_for('static', filename=item.cover_photo.thumbnail) }}" height="200" width="200" alt="Cover" style="object-fit: cover; border: 3px solid #eee;">
+                            {% else %}
+                                <div class="bg-light rounded my-4 d-flex align-items-center justify-content-center" style="height:200px; width:200px;">
+                                    <i class="bx bx-image-alt display-1 text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="user-info text-center">
+                                <h4 class="mb-2">{{ item.title }}</h4>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <span class="badge bg-label-secondary">{{ item.type|capitalize }}</span>
+                                    
+                                    {% if item.is_published %}
+                                        <span class="badge bg-label-success"><i class="bx bx-show me-1"></i> Publié</span>
+                                    {% else %}
+                                        <span class="badge bg-label-warning"><i class="bx bx-hide me-1"></i> Brouillon</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="pb-2 border-bottom mb-4 mt-3">Informations</h5>
+                    <div class="info-container">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <span class="fw-bold me-2">Statut :</span>
+                                {% if item.is_published %}
+                                    <span class="text-success fw-bold">Visible sur le site</span>
+                                {% else %}
+                                    <span class="text-muted fw-bold">Masqué (Brouillon)</span>
+                                {% endif %}
+                            </li>
+                            <li class="mb-3">
+                                <span class="fw-bold me-2">Date :</span>
+                                <span>{{ item.created_at.strftime('%d %B %Y') }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <span class="fw-bold me-2">Dossier :</span>
+                                <code class="small text-primary">{{ item.gallery }}</code>
+                            </li>
+                            {% if item.type == 'product' %}
+                            <li class="mb-3">
+                                <span class="fw-bold me-2">Prix :</span>
+                                <span class="text-success fw-bold">{{ item.price }} €</span>
+                            </li>
+                            {% endif %}
+                            <li class="mb-3">
+                                <span class="fw-bold me-2">Photos :</span>
+                                <span class="badge bg-label-info">{{ photos|length }} fichiers</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+            <div class="card mb-4">
+                <h5 class="card-header">Description</h5>
+                <div class="card-body">
+                    <p style="white-space: pre-wrap;" class="text-muted">
+                        {{ item.description or "Aucune description fournie." }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h5 class="card-header d-flex justify-content-between align-items-center">
+                    Galerie Photos
+                    <small class="text-muted">{{ photos|length }} images</small>
+                </h5>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for photo in photos %}
+                        <div class="col-md-4 col-6">
+                            <div class="position-relative group-hover">
+                                <img src="{{ url_for('static', filename=photo.thumbnail) }}" 
+                                     class="rounded img-fluid border" 
+                                     style="height: 150px; width: 100%; object-fit: cover;" 
+                                     alt="Gallery Image">
+                                
+                                {% if item.cover_image_id == photo.id %}
+                                <span class="badge bg-primary position-absolute top-0 start-0 m-1">
+                                    <i class="bx bxs-star"></i> Couverture
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-4 w-100">
+                            <i class="bx bx-images text-muted display-4"></i>
+                            <p>Aucune photo dans ce dossier.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .group-hover img:hover {
+        transform: scale(1.02);
+        transition: 0.3s;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

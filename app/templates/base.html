@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+    {% include 'include/head.html' %}
+
+<body>
+        <!-- Preloader -->
+    <div id="preloader">
+        <div class="showbox">
+            <div class="loader">
+                <svg class="circular" viewBox="25 25 50 50">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                </svg>
+            </div>
+        </div>
+        <div class="questions-area text-center">
+            <p>Did you know?</p>
+            <ul>
+                <li>The largest photography competition is 353,768 entries.</li>
+                <li>Photography is the toughest profession in the world.</li>
+                <li>The world’s largest photo album by dimensions was 13 ft 11.5 in x 17 ft.</li>
+                <li>The world’s largest photo mosaic featured 176,175 pictures.</li>
+                <li>The world’s largest camera lens was a 5200mm lens attached to a canon.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="gradient-background-overlay"></div>
+
+    {% include 'include/header.html' %}
+    {% include 'include/sidebar.html' %}
+    <!-- Social Sidebar Area End -->
+    {% block content %}{% endblock %}
+
+    <!-- ***** Contact Area Start ***** -->
+    <div class="contact-popup-form" id="contact-modal-lg">
+        <div class="modal fade contact-modal-lg" tabindex="-1" role="dialog" aria-labelledby="contact-modal-lg" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="contact-heading-text text-center mb-30">
+                                    <span></span>
+                                    <h2>Veuillez nous contacter via WhatsApp</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Contact Form Area -->
+                    <div class="contact-form-area">
+                        <div class="container-fluid">
+                            <form id="whatsappForm">
+                                <div class="row">
+                                    <div class="col-12 col-md-4">
+                                        <input type="text" class="form-control" id="name" placeholder="Votre Nom">
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <input type="tel" class="form-control" id="phone" placeholder="Votre Numéro de téléphone">
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <input type="text" class="form-control" id="subject" placeholder="Objet">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <textarea class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                    </div>
+
+                                    <div class="col-12 text-center">
+                                        <button type="button" onclick="sendWhatsApp()" class="btn studio-btn mt-3">
+                                            <i class="fa fa-whatsapp"></i> Envoyer
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <p>{{ site_settings.footer_text }} <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
+
+    {% include 'include/script.html' %}
+</body>
+</html>

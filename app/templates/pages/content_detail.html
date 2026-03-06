@@ -1,0 +1,207 @@
+{% extends "baseblogs.html" %}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block contentblogs %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='blogs/css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blogs/css/vendor.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='blogs/css/main.css') }}">
+
+    <script src="{{ url_for('static', filename='blogs/js/modernizr.js') }}"></script>
+    <script src="{{ url_for('static', filename='blogs/js/pace.min.js') }}"></script>
+</head>
+<style>
+    /* Sur les écrans larges (Desktop), on force 3 colonnes */
+    @media only screen and (min-width: 900px) {
+        .bricks-wrapper .brick {
+            width: 25% !important;
+        }
+    }
+
+    @media only screen and (min-width: 900px) and (max-width: 1199px) {
+        .bricks-wrapper .brick {
+            width: 33.33333% !important;
+        }
+    }
+
+    /* Sur les tablettes, on peut rester à 2 colonnes (50%) */
+    @media only screen and (min-width: 600px) and (max-width: 899px) {
+        .bricks-wrapper .brick {
+            width: 50% !important;
+        }
+    }
+
+    /* Sur mobile, 1 seule colonne (100%) */
+    @media only screen and (max-width: 599px) {
+        .bricks-wrapper .brick {
+            width: 100% !important;
+        }
+    }
+    
+    /* Ajustement des marges pour éviter les chevauchements */
+    .brick {
+        padding: 0 10px; /* Espace entre les photos */
+    }
+</style>
+
+<body id="top" style="background-color: #343a40 !important;
+    background-image: url('https://images.unsplash.com/photo-1516541196182-6bdb0516ed27?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'); 
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-attachment: fixed; 
+    background-position: center;">
+    <section id="portfolio" style="background-color: #00000004 !important;" class="mb-30">
+        
+        <div class="intro-wrap" style="background-color: #343a40 !important;">
+            <div class="row narrow section-intro with-bottom-sep animate-this" style="padding-bottom: 0rem;">
+                <div class="col-twelve">
+                    <h3>{{ article.type | capitalize }}</h3>
+                    <h1>{{ article.title }}</h1>
+                    
+                    <p class="lead">{{ article.description }}</p>
+                </div>
+                {% if article.type == "blog" %}
+                    <div class="col-twelve">
+                        <button type="button" id="downloadBtn" onclick="downloadImages()" class="btn studio-btn mb-30" style="background-color: #ed9125; color: white; border-radius: 15px;">
+                            <i id="downloadIcon" class="fa fa-download"></i> 
+                            <span id="btnText">Télécharger</span>
+                            <i id="spinner" class="fa fa-spinner fa-spin" style="display: none; margin-left: 10px;"></i>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row portfolio-content mb-30">
+            <div class="col-twelve">
+                <div id="folio-wrap" class="bricks-wrapper">
+                    
+                    {# On suppose que tu as une relation ou une méthode pour lister les photos de la galerie de ce contenu #}
+                    {# Si tu stockes les photos dans le dossier article.gallery #}
+                    
+                    {% for photo in photos_du_projet %}
+                    <div class="brick folio-item">
+                        <div class="item-wrap animate-this" data-src="{{ url_for('static', filename=photo.full_url) }}" data-sub-html="#cap-{{ photo.id }}">
+                            <a href="#" class="overlay">
+                                <img src="{{ url_for('static', filename=photo.thumb_url) }}" alt="{{ article.title }}" style="border-radius: 0px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                                <div class="item-text">
+                                    <span class="folio-types">
+                                        {{ article.type }}
+                                    </span>
+                                    <h3 class="folio-title">{{ article.title }}</h3>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="cap-{{ photo.id }}" class='hide'>
+                            <h4>{{ article.title }}</h4>
+                            <p>Photo de l'album {{ article.title }} par {{ site_settings.name }}.</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-white text-center">Aucune image dans cette galerie.</p>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-area" style="background: rgba(255, 255, 255, 0); border-top: 1px solid #ebebeb; padding: 0px 0 0px !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="copywrite-text text-center mt-30" style="margin-top: 20px; padding: 0px 0 0px !important;">
+
+                        <p style="font-size: 12px; color: #1d1d1da9;">
+                            <a href="https://maps.google.com/?q={{ site_settings.address }}" target="_blank">
+                                <i class="fa fa-map-marker" style="color:#ed9125;" aria-hidden="true"></i>
+                                <span style="color: #1d1d1d;">{{ site_settings.address }}</span>
+                            </a> 
+                            <a href="https://wa.me/{{ site_settings.phone | replace(' ', '') }}">
+                                <i class="fa fa-whatsapp" style="color:#ed9125;" aria-hidden="true"></i>
+                                <span style="color: #1d1d1d;">{{ site_settings.phone }}</span>
+                            </a> 
+                            <a href="mailto:{{ site_settings.email }}">
+                                <i class="fa fa-envelope-o" style="color:#ed9125;" aria-hidden="true"></i>
+                                <span style="color: #1d1d1d;">{{ site_settings.email }}</span>
+                            </a>
+                            &copy; <script>document.write(new Date().getFullYear());</script> 
+                            <strong>{{ site_settings.name }}</strong>. Tous droits réservés. 
+                            Conçu avec <i class="fa fa-heart" style="color: #ed9125;"></i>
+                            
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{{ url_for('static', filename='blogs/js/jquery-2.1.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='blogs/js/plugins.js') }}"></script>
+    <script src="{{ url_for('static', filename='blogs/js/main.js') }}"></script>
+
+    <script>
+        function downloadImages() {
+            const btn = document.getElementById('downloadBtn');
+            const icon = document.getElementById('downloadIcon');
+            const spinner = document.getElementById('spinner');
+            const btnText = document.getElementById('btnText');
+            
+            // 1. Récupération des images
+            const images = [];
+            document.querySelectorAll('.item-wrap img').forEach(img => {
+                let src = img.getAttribute('src');
+                if (src && src.includes('/static/')) {
+                    src = src.split('/static/')[1];
+                    images.push(src);
+                }
+            });
+
+            if (images.length === 0) {
+                alert("Aucune image trouvée.");
+                return;
+            }
+
+            // 2. ACTIVER LE CHARGEMENT (Bloquer le bouton)
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
+            btnText.innerText = "Préparation du ZIP...";
+            icon.style.display = "none";
+            spinner.style.display = "inline-block";
+
+            // 3. ENVOI DE LA REQUÊTE
+            fetch("{{ url_for('main.download_images') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ images: images })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Erreur serveur");
+                return res.blob();
+            })
+            .then(blob => {
+                // 4. CRÉATION DU LIEN DE TÉLÉCHARGEMENT
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "{{ article.title | replace(' ', '_') }}.zip";
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Une erreur est survenue lors du téléchargement.");
+            })
+            .finally(() => {
+                // 5. REMETTRE LE BOUTON À LA NORMALE
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btnText.innerText = "Télécharger";
+                icon.style.display = "inline-block";
+                spinner.style.display = "none";
+            });
+        }
+    </script>
+</body>
+{% endblock %}

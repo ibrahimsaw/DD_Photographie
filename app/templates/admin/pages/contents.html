@@ -1,0 +1,124 @@
+{% extends "admin/baseadmin.html" %}
+{% block title %}Gestion / {{ content_type|capitalize }}s{% endblock %}
+{% block name %}Gestion / {{ content_type|capitalize }}s{% endblock %}
+{% block contentadmin %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold py-3 mb-0">
+            <span class="text-muted fw-light">Gestion /</span> {{ content_type|capitalize }}s
+        </h4>
+        <a href="{{ url_for('admin.content_form', type=content_type) }}" class="btn btn-primary shadow">
+            <i class="bx bx-plus me-1"></i> Ajouter un {{ content_type }}
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <h5 class="card-header">Liste des {{ content_type }}s enregistrés</h5>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Couverture</th>
+                        <th>Titre</th>
+                        <th>
+                            <div class="d-flex justify-content-center gap-2">
+                                <span>Statut</span>
+                            </div>
+                        </th>
+                        <th>Date</th>
+                        <th><i class="bx bx-images"></i> Photos</th>
+                        {% if content_type == 'product' %}<th>Prix</th>{% endif %}
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    {% for item in contents %}
+                    <tr>
+                        <td>
+                            {% if item.cover_photo %}
+                            <img src="{{ url_for('static', filename=item.cover_photo.thumbnail) }}" 
+                                 class="rounded" style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #eee;">
+                            {% else %}
+                            <div class="bg-lighter rounded text-center" style="width: 50px; height: 50px; line-height: 50px;">
+                                <i class="bx bx-image-alt text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            <span class="fw-semibold">{{ item.title }}</span><br>
+                            <small class="text-muted text-truncate d-inline-block" style="max-width: 150px;">{{ item.gallery }}</small>
+                        </td>
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                {% if item.is_published %}
+                                    <span class="badge bg-label-success">
+                                        <i class="bx bx-show-alt"></i>
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-label-danger">
+                                        <i class="bx bx-hide"></i>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        
+                        <td>{{ item.created_at.strftime('%d/%m/%Y') }}</td>
+                        
+                        <td>
+                            <span class="badge bg-label-info">{{ item.photo_count }} photos</span>
+                        </td>
+
+                        {% if content_type == 'product' %}
+                        <td><span class="text-primary fw-bold">{{ "%.2f"|format(item.price or 0) }} €</span></td>
+                        {% endif %}
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a class="btn btn-icon btn-outline-secondary btn-sm" 
+                                   href="{{ url_for('admin.content_detail', type=item.type, id=item.id) }}" 
+                                   title="Voir">
+                                    <i class="bx bx-show"></i>
+                                </a>
+                                
+                                <a class="btn btn-icon btn-outline-primary btn-sm" 
+                                   href="{{ url_for('admin.content_form', id=item.id) }}" 
+                                   title="Modifier">
+                                    <i class="bx bx-edit-alt"></i>
+                                </a>
+                                
+                                <form action="{{ url_for('admin.delete_content', id=item.id) }}" 
+                                      method="POST" 
+                                      onsubmit="return confirm('Attention ! Cela supprimera définitivement cet élément et TOUTES ses images. Continuer ?');"
+                                      style="display:inline;">
+                                    <button type="submit" class="btn btn-icon btn-outline-danger btn-sm" title="Supprimer">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="{% if content_type == 'product' %}7{% else %}6{% endif %}" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="bx bx-folder-open display-4"></i>
+                                <p class="mt-2">Aucun {{ content_type }} trouvé pour le moment.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table td { vertical-align: middle; }
+    .bg-lighter { background-color: #f5f5f9; }
+    /* Style pour que les badges ne soient pas trop imposants */
+    .badge { text-transform: none; font-weight: 500; }
+</style>
+{% endblock %}

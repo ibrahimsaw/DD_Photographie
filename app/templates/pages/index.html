@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil | {{ site_settings.name }}{% endblock %}
+
+{% block content %}
+    <section class="welcome-area">
+        <div class="carousel h-100 slide" data-ride="carousel" id="welcomeSlider">
+            
+            <ol class="carousel-indicators">
+                {% for item in slider_data %}
+                    <li data-target="#welcomeSlider" 
+                        data-slide-to="{{ loop.index0 }}" 
+                        class="bg-img {% if loop.first %}active{% endif %}" 
+                        style="background-image: url('{{ url_for('static', filename='/' + item.image_url_thumb) }}');">
+                    </li>
+                {% endfor %}
+            </ol>
+
+            <div class="carousel-inner h-100">
+                {% for item in slider_data %}
+                    <div class="carousel-item h-100 bg-img {% if loop.first %}active{% endif %}" 
+                        style="background-image: url('{{ url_for('static', filename='/' + item.image_url_thumb) }}');">
+                        <div class="carousel-content h-100">
+                            <div class="slide-text">
+                                <span>0{{ loop.index }}.</span>
+                                <h2>{{ item.category_name | capitalize }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="carousel-item h-100 bg-img active" 
+                         style="background-image: url('{{ url_for('static', filename='img/bg-img/1 (1).jpg') }}');">
+                        <div class="carousel-content h-100">
+                            <div class="slide-text">
+                                <span>01.</span>
+                                <h2>Bienvenue chez {{ site_settings.name }}</h2>
+                                <p>Capturez vos plus beaux moments avec notre studio.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <a class="carousel-control-prev" href="#welcomeSlider" role="button" data-slide="prev">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span class="sr-only">Précédent</span>
+            </a>
+            <a class="carousel-control-next" href="#welcomeSlider" role="button" data-slide="next">
+                <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                <span class="sr-only">Suivant</span>
+            </a>
+
+        </div>
+    </section>
+
+{% endblock %}

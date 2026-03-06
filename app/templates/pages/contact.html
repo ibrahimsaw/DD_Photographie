@@ -1,0 +1,101 @@
+{% extends "basehome.html" %}
+
+{% block title %}Contact{% endblock %}
+
+{% block contenthome %}
+    <!-- Google Maps -->
+    <section class="about-me-area mt-10 section_padding_100">
+        <div class="container">
+            <div class="col-12 text-center mb-50">
+                <h2>Contactez-nous</h2>
+                <p>{{ site_settings.meta_description }} </p>
+                <div class="mx-auto mt-3" style="width: 60px; height: 3px; background: #ed9125;"></div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-7 mb-15">
+                    <div class="contact-form-area" style="border-radius: 15px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                        <div class="container-fluid">
+                            <form id="whatsappForm">
+                                <div class="row">
+                                    <div class="col-12 col-md-4">
+                                        <input type="text" class="form-control" id="name" placeholder="Votre Nom">
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <input type="tel" class="form-control" id="phone" placeholder="Votre Numéro de téléphone">
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <input type="text" class="form-control" id="subject" placeholder="Objet">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <textarea class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                    </div>
+
+                                    <div class="col-12 text-center">
+                                        <button type="button" onclick="sendWhatsApp()" class="btn studio-btn mb-30" style="background-color: #ed9125; color: white; border-radius: 15px;">
+                                            <i class="fa fa-whatsapp"></i> Envoyer
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-0" style="border-radius: 15px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                            <div class="embed-responsive embed-responsive-16by9 rounded-top">
+                                <iframe class="embed-responsive-item" 
+                                        src="https://maps.google.com/maps?q={{ site_settings.address | replace(' ', '%20') }}&output=embed" 
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                                <div class="p-4">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="d-flex align-items-start mb-3">
+                                            <i class="fa fa-map-marker mt-1 mr-3" style="color:#ed9125;"></i>
+                                            <span>{{ site_settings.address }}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-3">
+                                            <i class="fa fa-phone mr-3" style="color:#ed9125;"></i>
+                                            <span>{{ site_settings.phone }}</span>
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <i class="fa fa-envelope mr-3" style="color:#ed9125;"></i>
+                                            <span class="text-break">{{ site_settings.email }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Follow Me Instagram Area Start -->
+    <section class="follow-me-instagram-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-11 ml-auto">
+                    <div class="follow-me-title">
+                        <a href="{{ site_settings.instagram }}"><h5>Follow me @ Instagram</h5></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Instagram Feeds Area -->
+        <div class="instagram-feeds-area owl-carousel">
+            {% for photo in photos %}
+                <div class="single-instagram-feeds" style="margin-left: 15px;">
+                    <img src="{{ url_for('static', filename='/' + photo.thumbnail) }}" alt="Photo {{ photo.id }}" style="border-radius: 15px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                    <a href="#"><i class="fa fa-instagram" aria-hidden="true" ></i></a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+    <!-- Follow Me Instagram Area End -->
+{% endblock %}

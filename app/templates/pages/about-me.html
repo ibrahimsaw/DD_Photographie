@@ -1,0 +1,144 @@
+{% extends "basehome.html" %}
+
+{% block title %}À propos | {{ site_settings.name }}{% endblock %}
+
+{% block contenthome %}
+<style>
+    /* Design des cartes de service */
+    .service-card {
+        border: none;
+        background: #fff;
+        padding: 30px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    .service-icon {
+        width: 60px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+    .service-card:hover .service-icon {
+        transform: scale(1.1);
+    }
+    /* Style pour l'image de profil */
+    .profile-img-container {
+        position: relative;
+        display: inline-block;
+    }
+    .profile-img {
+        width: 100%;
+        max-width: 450px;
+        height: auto;
+        border-radius: 30px;
+        border: 8px solid transparent; /* Couleur gérée par JS */
+        transition: all 0.5s ease;
+    }
+</style>
+
+<section class="about-me-area mt-10 section_padding_100">
+    <div class="container">
+        <div class="col-12 text-center mb-50">
+            <h2 style="color: #1d1d1d;">À Propos de Moi</h2>
+            <p style="color: #1d1d1da9;">Découvrez mon univers</p>
+            <div class="mx-auto mt-3" style="width: 60px; height: 3px; background: #ed9125;"></div>
+        </div>
+
+        <div class="row align-items-center justify-content-center mb-50">
+            <div class="col-12 col-lg-5 text-center mb-50 mb-lg-0">
+                <div class="profile-img-container shadow-lg rounded" style="border-radius: 30px;">
+                    {% if site_settings.about_image %}
+                        <img id="aboutImage" src="{{ url_for('static', filename=site_settings.about_image) }}" class="profile-img" crossOrigin="anonymous" alt="Photographe">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='admin/assets/img/avatars/1.png') }}" class="w-px-40 h-auto rounded-circle">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 offset-lg-1">
+                <div class="about-content">
+                    <h2 class="mb-4">Capturer l'invisible, <br><p style="color: #ed9125;">Raconter votre histoire.</p></h2>
+                    <p class="lead" style="line-height: 1.8; color: #555;text-align: justify;">{{ site_settings.bio }}</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn studio-btn mt-4" style="background-color: #ed9125; color: white; border-radius: 15px;">
+                        <img src="{{ url_for('static', filename='img/core-img/logo-icon.png') }}" alt=""> Me contacter
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-md-4 mb-4">
+                <div class="service-card text-center wow fadeInUp" data-wow-delay="0.1s">
+                    <img src="{{ url_for('static', filename='img/core-img/heart.png') }}" class="service-icon" alt="">
+                    <h5 class="font-weight-bold">Mariages</h5>
+                    <p class="text-muted">Des souvenirs impérissables pour le plus beau jour de votre vie.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="service-card text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <img src="{{ url_for('static', filename='img/core-img/photo-camera.png') }}" class="service-icon" alt="">
+                    <h5 class="font-weight-bold">Studio Pro</h5>
+                    <p class="text-muted">Mise en lumière de vos projets et de votre image de marque.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="service-card text-center wow fadeInUp" data-wow-delay="0.5s">
+                    <img src="{{ url_for('static', filename='img/core-img/video-camera.png') }}" class="service-icon" alt="">
+                    <h5 class="font-weight-bold">Portraits</h5>
+                    <p class="text-muted">Révéler votre personnalité à travers des clichés authentiques.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="our-skills-area text-center mt-100 p-5 bg-light rounded-lg shadow-sm">
+            <h4 class="mb-5">Mes Spécialités</h4>
+            <div class="row">
+                {% set skills = [('Mode', 75), ('Portraits', 83), ('Studio', 60), ('Mariage', 95)] %}
+                {% for label, percent in skills %}
+                <div class="col-6 col-md-3 mb-4">
+                    <div class="single-pie-bar" data-percent="{{ percent }}">
+                        <canvas class="bar-circle" width="100" height="100"></canvas>
+                        <h6 class="mt-3 font-weight-bold">{{ label }}</h6>
+                        <small class="text-muted">{{ percent }}%</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // SCRIPT DE COULEUR DYNAMIQUE
+    window.addEventListener('load', function() {
+        const img = document.getElementById('aboutImage');
+        if (!img) return;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 1; canvas.height = 1;
+        
+        ctx.drawImage(img, 0, 0, 1, 1);
+        try {
+            const p = ctx.getImageData(0, 0, 1, 1).data;
+            const color = `rgb(${p[0]}, ${p[1]}, ${p[2]})`;
+            const lightColor = `rgba(${p[0]}, ${p[1]}, ${p[2]}, 0.15)`;
+            
+            // Applique la couleur à l'image
+            img.style.borderColor = color;
+            img.style.boxShadow = `0 20px 40px ${lightColor}`;
+            
+            // On peut aussi changer les titres ou accents dynamiquement
+            document.querySelectorAll('.single-pie-bar h6').forEach(h6 => {
+                h6.style.color = color;
+            });
+        } catch(e) {
+            console.log("CORS bloqué pour l'analyse de couleur.");
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "basehome.html" %}
+
+{% block title %}service{% endblock %}
+
+{% block contenthome %}
+    <div class="container">
+        <h1 class="mt-5">Services</h1>
+        <p>La page que vous recherchez n'existe pas.</p>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">Retour à l'accueil</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,49 @@
+[
+  {
+    "title": "Site",
+    "icon": "bx-home",
+    "route": "main.index",
+    "type": "link"
+  },
+  {
+    "title": "Dashboard",
+    "icon": "bx-home-circle",
+    "route": "admin.dashboard",
+    "type": "link"
+  },
+  {
+    "title": "Contenu",
+    "type": "header"
+  },
+  {
+    "title": "Galerie Photo",
+    "icon": "bx-images",
+    "route": "admin.photos",
+    "type": "link"
+  },
+  {
+    "title": "Catégories",
+    "icon": "bx-category",
+    "route": "admin.categories",
+    "type": "link"
+  },
+  {
+    "title": "Articles / Boutique",
+    "icon": "bx-layout",
+    "type": "dropdown",
+    "sub_menu": [
+      { "title": "Liste Blog", "route": "admin.content_list", "params": {"type": "blog"} },
+      { "title": "Liste Produits", "route": "admin.content_list", "params": {"type": "product"} }
+    ]
+  },
+  {
+    "title": "Réglages",
+    "type": "header"
+  },
+  {
+    "title": "Profil Photographe",
+    "icon": "bx-user-pin",
+    "route": "admin.settings",
+    "type": "link"
+  }
+]

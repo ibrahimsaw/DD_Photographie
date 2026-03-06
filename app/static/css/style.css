@@ -1,0 +1,31 @@
+.envelope-icon {
+    fill: #ed9026;
+}
+.social-info-area a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Taille des logos image */
+.social-logo {
+    width: 22px !important;
+    height: 20px !important;
+    max-width: 22px !important;
+    max-height: 20px !important;
+    min-width: 22px !important;
+    min-height: 20px !important;
+    object-fit: contain;
+    display: inline-block;
+}
+
+/* Icônes Font Awesome */
+.social-info-area i {
+    font-size: 18px;
+    color: #e4ac13;
+}
+
+/* Texte */
+.social-info-area span {
+    font-size: 11px;
+}

@@ -1,0 +1,74 @@
+{
+  "brand": {
+    "name": "DD Photographie",
+    "logoSvg": "assets/img/logo.png",
+    "home": "admin.dashboard"
+  },
+
+  "menu": [
+    {
+      "type": "item",
+      "title": "Dashboard",
+      "icon": "bx bx-home-circle",
+      "path": "admin.dashboard",
+      "active": true
+    },
+    {
+      "type": "item",
+      "title": "Ajouter une photo",
+      "icon": "bx bx-image-add",
+      "path": "admin.add_photo"
+    },
+    {
+      "type": "item",
+      "title": "Catégories",
+      "icon": "bx bx-category",
+      "path": "admin.categories"
+    },
+    {
+      "type": "item",
+      "title": "Blog",
+      "icon": "bx bx-news",
+      "path": "admin.add_blog"
+    },
+    {
+      "type": "item",
+      "title": "Déconnexion",
+      "icon": "bx bx-log-out",
+      "path": "admin.logout"
+    },
+    
+    {
+      "type": "header",
+      "title": "Pages"
+    },
+
+    {
+      "type": "parent",
+      "title": "Account Settings",
+      "icon": "bx bx-dock-top",
+      "children": [
+        {
+          "title": "Account",
+          "path": "pages-account-settings-account.html"
+        },
+        {
+          "title": "Notifications",
+          "path": "pages-account-settings-notifications.html"
+        },
+        {
+          "title": "Connections",
+          "path": "pages-account-settings-connections.html"
+        }
+      ]
+    },
+
+    {
+      "type": "item",
+      "title": "Support",
+      "icon": "bx bx-support",
+      "path": "https://github.com/themeselection/sneat-html-admin-template-free/issues",
+      "external": true
+    }
+  ]
+}

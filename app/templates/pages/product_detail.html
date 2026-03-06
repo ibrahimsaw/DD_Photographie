@@ -1,0 +1,44 @@
+{% extends "baseblogs.html" %}
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block contentblogs %}
+<style>
+    /* Force 3 colonnes sur PC pour les produits */
+    @media only screen and (min-width: 1024px) {
+        .bricks-wrapper .brick { width: 33.33333% !important; }
+    }
+    .product-header { padding: 80px 0; text-align: center; color: white; }
+</style>
+
+<div class="product-header" style="background-color: #343a40;">
+    <div class="container">
+        <h1>{{ product.title }}</h1>
+        <p class="lead">{{ product.description }}</p>
+        <button class="btn studio-btn" onclick="downloadImages()">
+            <i class="fa fa-download"></i> Télécharger l'album
+        </button>
+    </div>
+</div>
+
+<section id="portfolio" style="background-color: #343a40;">
+    <div class="row portfolio-content">
+        <div class="col-twelve">
+            <div id="folio-wrap" class="bricks-wrapper">
+                {% for photo in photos %}
+                <div class="brick folio-item">
+                    <div class="item-wrap animate-this" data-src="{{ url_for('static', filename=photo.url) }}">
+                        <a href="#" class="overlay">
+                            <img src="{{ url_for('static', filename=photo.url) }}" alt="" style="border-radius: 0px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                            <div class="item-text">
+                                <h3 class="folio-title">Zoom</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

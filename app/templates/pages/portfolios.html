@@ -1,0 +1,25 @@
+{% extends "basehome.html" %}
+
+{% block title %}Portfolio{% endblock %}
+
+{% block contenthome %}
+<div class="gallery_area clearfix">
+    <div class="container-fluid clearfix">
+
+        <div class="gallery_menu">
+            <div class="portfolio-menu" id="portfolio-menu">
+                <!-- Les boutons seront injectés ici par JS -->
+            </div>
+        </div>
+
+        <!-- Les images seront injectées ici -->
+        <div class="row portfolio-column" id="portfolio-container"></div>
+
+
+    </div>
+</div>
+
+
+<!-- Script Portfolio -->
+<script src="{{ url_for('static', filename='js/portfolio.js') }}"></script>
+{% endblock %}

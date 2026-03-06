@@ -1,0 +1,75 @@
+{% extends "basehome.html" %}
+{% block title %}Produits | {{ site_settings.name }}{% endblock %}
+
+{% block contenthome %}
+    <section class="blog-area section_padding_100 mt-10">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 text-center mb-50">
+                    <h2 style="color: #1d1d1d;">Nos Réalisations & Produits</h2>
+                    <p style="color: #1d1d1da9;">Découvrez nos prestations et produits exclusifs</p>
+                    <div class="mx-auto mt-3" style="width: 60px; height: 3px; background: #ed9125;"></div>
+                </div>
+                
+                {% for product in products %}
+                <div class="col-lg-4 col-md-6 col-10 mb-4">
+                    <div id="aboutImage" class="single-blog-area text-center mb-50 wow fadeInUpBig" data-wow-delay="100ms" data-wow-duration="1s"style="border-radius: 15px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                        
+                        <div class="blog-thumbnail " style="position: relative; overflow: hidden;border-radius: 15px 15px 0px 0px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                            {% if product.cover_photo %}
+                                <img id="aboutImage" src="{{ url_for('static', filename='/' + product.cover_photo.thumbnail) }}" alt="{{ product.title }}"style="border-radius: 15px 15px 0px 0px;box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);">
+                            {% else %}
+                                <img id="aboutImage" src="{{ url_for('static', filename='img/bg-img/default-blog.jpg') }}" alt="{{ product.title }}"style="border-radius: 15px 15px 0px 0px;box-shadow: 0 15px 40px rgba(0,0,0,0.2);">
+                            {% endif %}
+                            
+                            {% if product.price %}
+                                <div class="album-price" style="position: absolute; bottom: 15px; right: 15px; background: #ed9125; color: #fff; padding: 6px 15px; border-radius: 15px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10;">
+                                    <span style="margin: 0; font-size: 14px;">{{ "{:,.0f}".format(product.price) }} FCFA</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="blog-content">
+                            <span style="margin: 0 auto 0px;margin-top: 10px;"></span>
+                            <h2 style="margin-top: 10px;">{{ product.title }}</h2>
+                            
+                            <div class="post-meta">
+                                <a href="#" class="post-date" style="color: #ed9125;">{{ product.type | capitalize }}</a>
+
+                                <a href="#" class="post-author">Studio {{ site_settings.name }}</a>
+                            </div>
+                            
+                            <p style="margin-bottom: 0px;">{{ product.description | truncate(150) }}</p>
+                            
+                            <a href="{{ url_for('main.content_detail', id=product.id) }}" class="btn studio-btn mb-30" style="background-color: #ed9125; color: white; border-radius: 15px;">
+                                <img src="{{ url_for('static', filename='img/core-img/logo-icon.png') }}" alt=""> Voir la galerie
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12 text-center">
+                    <div class="no-content-message" style="padding: 100px 0;">
+                        <i class="fa fa-camera-retro" style="font-size: 50px; color: #ed9125; margin-bottom: 20px;"></i>
+                        <p style="color: black; font-size: 18px;">Aucun produit publié n'est disponible pour le moment.</p>
+                        <a href="{{ url_for('main.index') }}" class="btn studio-btn mt-30">Retour à l'accueil</a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+
+            {% if products %}
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="Page navigation" class="pagination-area mb-50">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item active"><a class="page-link" href="#">01.</a></li>
+                            </ul>
+                    </nav>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

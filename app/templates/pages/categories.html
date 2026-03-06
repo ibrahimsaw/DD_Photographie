@@ -1,0 +1,166 @@
+{% extends "basehome.html" %}
+
+{% block title %}Catégories | DD Photographie{% endblock %}
+
+{% block contenthome %}
+<style>
+    /* Style des boutons de filtrage */
+    .portfolio-menu .btn {
+        background: transparent;
+        color: #1d1d1d;
+        border: 2px solid #eee;
+        border-radius: 50px;
+        padding: 8px 25px;
+        margin: 5px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .portfolio-menu .btn.active, .portfolio-menu .btn:hover {
+        background: #ed9125;
+        border-color: #ed9125;
+        color: white;
+    }
+
+    /* Conteneur de l'image */
+    .single_gallery_item {
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+        transition: all 0.4s ease;
+        border: 5px solid transparent; /* Sera coloré par le JS */
+    }
+
+    .single_gallery_item img {
+        width: 100%;
+        display: block;
+        transition: transform 0.6s ease;
+    }
+
+    .single_gallery_item:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Overlay moderne */
+    .hover_overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: 0.4s;
+    }
+
+    .single_gallery_item:hover .hover_overlay {
+        opacity: 1;
+    }
+</style>
+
+<section class="blog-area section_padding_100 mt-10">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-10">
+                <h2 class="font-weight-bold">Portfolio & Catégories</h2>
+                <p class="text-muted">Explorez mes captures par thématique</p>
+                <div class="mx-auto mt-3" style="width: 60px; height: 3px; background: #ed9125;"></div>
+            </div>
+        </div>
+
+        <div class="row mb-50">
+            <div class="col-12 text-center">
+                <div class="portfolio-menu">
+                    <button class="active btn" type="button" data-filter="*">Tout</button>
+                    {% for cat in categories %}
+                        {% if cat.name.lower() != "contenu" %}
+                            {% set filter_name = cat.name.lower().replace(' ', '') %}
+                            <button class="btn" type="button" data-filter=".{{ filter_name }}">
+                                {{ cat.name | capitalize }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row portfolio-column">
+            {% for photo in photos %}
+                {% set cat_name = photo.category.name.lower() if photo.category else 'sans-categorie' %}
+                
+                {% if cat_name != "contenu" %}
+                    {% set photo_cat_class = cat_name.replace(' ', '') %}
+                    
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 column_single_gallery_item {{ photo_cat_class }} wow fadeInUp">
+                        <div class="single_gallery_item dynamic-card shadow" style="border-radius: 15px; border: 3px solid transparent;">
+                            
+                            <img class="img-to-analyze" 
+                                src="{{ url_for('static', filename='/' + photo.thumbnail) }}" 
+                                alt="Photo {{ photo.id }}" 
+                                crossOrigin="anonymous"
+                                style="border-radius: 10px;">
+                            
+                            <div class="hover_overlay">
+                                <a class="gallery_img btn btn-light rounded-circle mb-2" href="{{ url_for('static', filename='/' + photo.thumbnail) }}" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-eye text-dark"></i>
+                                </a>
+                                <div class="text-center px-3">
+                                    <h6 class="text-white mb-0">{{ photo.category.name | capitalize if photo.category else 'DD Photo' }}</h6>
+                                    <small class="text-white-50">Voir en grand</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <div class="alert alert-light border shadow-sm p-5">
+                        <i class="fa fa-picture-o fa-3x mb-3" style="color: #ed9125;"></i>
+                        <h4>Galerie vide</h4>
+                        <p>Revenez bientôt pour découvrir mes nouvelles captures.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row">
+            <div class="col-12 text-center mt-70">
+                <button id="loadMore" class="btn btn-dark px-5 py-3" style="border-radius: 50px; font-weight: bold;">
+                    <i class="fa fa-refresh mr-2"></i> CHARGER PLUS
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    window.addEventListener('load', function() {
+        const images = document.querySelectorAll('.img-to-analyze');
+        
+        images.forEach(img => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1; canvas.height = 1;
+            
+            ctx.drawImage(img, 0, 0, 1, 1);
+            try {
+                const data = ctx.getImageData(0, 0, 1, 1).data;
+                const r = data[0], g = data[1], b = data[2];
+                const color = `rgb(${r}, ${g}, ${b})`;
+                const shadowColor = `rgba(${r}, ${g}, ${b}, 0.4)`;
+                
+                // On applique la couleur au parent (single_gallery_item)
+                const card = img.parentElement;
+                card.style.borderColor = color;
+                card.style.boxShadow = `0 15px 35px ${shadowColor}`;
+            } catch(e) {
+                console.log("Erreur de couleur :", e);
+            }
+        });
+    });
+</script>
+{% endblock %}

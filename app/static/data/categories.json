@@ -1,0 +1,7 @@
+[
+    { "style": "portraits", "name": "Portraits" },
+    { "style": "weddings", "name": "Mariages" },
+    { "style": "fashion", "name": "Mode" },
+    { "style": "studio", "name": "Studio" },
+    { "style": "life", "name": "Style de vie" }
+]

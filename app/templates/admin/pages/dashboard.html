@@ -1,0 +1,183 @@
+{% extends "admin/baseadmin.html" %}
+
+{% block title %}Tableau de Bord{% endblock %}
+{% block name %}Tableau de Bord{% endblock %}
+
+{% block contentadmin %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="text-white mb-1">
+                            Bienvenue sur votre Studio, {{ site_settings.name if site_settings.name else 'Photographe' }} ! 👋
+                        </h4>
+                        <p class="mb-0 opacity-75">
+                            Votre site est actuellement configuré en tant que : <strong>{{ site_settings.title or 'Professionnel' }}</strong>
+                        </p>
+                    </div>
+                    <i class="bx bx-camera display-4 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="avatar flex-shrink-0 mb-2">
+                        <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-image-alt"></i></span>
+                    </div>
+                    <span class="fw-semibold d-block mb-1">Total Photos</span>
+                    <h3 class="card-title mb-2">{{ photos_count or 0 }}</h3>
+                    <a href="{{ url_for('admin.photos') }}" class="btn btn-xs btn-outline-primary">Gérer</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="avatar flex-shrink-0 mb-2">
+                        <span class="avatar-initial rounded bg-label-info"><i class="bx bx-collection"></i></span>
+                    </div>
+                    <span class="fw-semibold d-block mb-1">Catégories</span>
+                    <h3 class="card-title mb-2">{{ categories_count or 0 }}</h3>
+                    <a href="{{ url_for('admin.categories') }}" class="btn btn-xs btn-outline-info">Gérer</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="avatar flex-shrink-0 mb-2">
+                        <span class="avatar-initial rounded bg-label-success"><i class="bx bx-news"></i></span>
+                    </div>
+                    <span class="fw-semibold d-block mb-1">Articles Blog</span>
+                    <h3 class="card-title mb-2">{{ blogs_count or 0 }}</h3>
+                    <a href="{{ url_for('admin.content_list', type='blog') }}" class="btn btn-xs btn-outline-success">Gérer</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="avatar flex-shrink-0 mb-2">
+                        <span class="avatar-initial rounded bg-label-warning"><i class="bx bx-shopping-bag"></i></span>
+                    </div>
+                    <span class="fw-semibold d-block mb-1">Produits</span>
+                    <h3 class="card-title mb-2">{{ products_count or 0 }}</h3>
+                    <a href="{{ url_for('admin.content_list', type='product') }}" class="btn btn-xs btn-outline-warning">Gérer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header d-flex align-items-center justify-content-between border-bottom mb-3">
+                    <h5 class="card-title m-0">Raccourcis Création</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="p-0 m-0">
+                        <li class="d-flex mb-4 pb-1 align-items-center">
+                            <div class="avatar flex-shrink-0 me-3">
+                                <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-plus"></i></span>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                <div class="me-2">
+                                    <h6 class="mb-0">Nouveau Blog</h6>
+                                    <small class="text-muted">Partager une séance</small>
+                                </div>
+                                <a href="{{ url_for('admin.content_form', type='blog') }}" class="btn btn-icon btn-sm btn-outline-primary"><i class="bx bx-chevron-right"></i></a>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-4 pb-1 align-items-center">
+                            <div class="avatar flex-shrink-0 me-3">
+                                <span class="avatar-initial rounded bg-label-warning"><i class="bx bx-cart-add"></i></span>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                <div class="me-2">
+                                    <h6 class="mb-0">Nouveau Produit</h6>
+                                    <small class="text-muted">Boutique en ligne</small>
+                                </div>
+                                <a href="{{ url_for('admin.content_form', type='product') }}" class="btn btn-icon btn-sm btn-outline-warning"><i class="bx bx-chevron-right"></i></a>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <div class="avatar flex-shrink-0 me-3">
+                                <span class="avatar-initial rounded bg-label-secondary"><i class="bx bx-cog"></i></span>
+                            </div>
+                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                <div class="me-2">
+                                    <h6 class="mb-0">Réglages Profil</h6>
+                                    <small class="text-muted">Infos & Réseaux</small>
+                                </div>
+                                <a href="{{ url_for('admin.settings') }}" class="btn btn-icon btn-sm btn-outline-secondary"><i class="bx bx-edit"></i></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-lg-8 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="row h-100 align-items-center">
+                        <div class="col-sm-5 text-center border-end">
+                            {% if site_settings.about_image %}
+                                <img src="{{ url_for('static', filename=site_settings.about_image) }}" 
+                                    alt="{{ site_settings.name }}" 
+                                    class="img-fluid rounded-circle mb-3 shadow-sm" 
+                                    style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #eee;">
+                            {% else %}
+                                <img src="https://img.icons8.com/clouds/200/photography.png" 
+                                    alt="Photography" 
+                                    class="img-fluid mb-3" 
+                                    width="120">
+                            {% endif %}
+
+                            <h5 class="mb-1">{{ site_settings.name or 'Votre Nom' }}</h5>
+                            <span class="badge bg-label-primary mb-3">{{ site_settings.title or 'Photographe' }}</span>
+                        </div>
+                        <div class="col-sm-7 ps-sm-4">
+                            <h6 class="fw-bold mb-3"><i class="bx bx-info-circle me-1"></i> Informations de contact</h6>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="bx bx-envelope me-2 text-primary"></i> {{ site_settings.email or 'Non configuré' }}</li>
+                                <li class="mb-2"><i class="bx bx-phone me-2 text-primary"></i> {{ site_settings.phone or 'Non configuré' }}</li>
+                                <li class="mb-2"><i class="bx bx-map-alt me-2 text-primary"></i> {{ site_settings.address or 'Adresse non définie' }}</li>
+                            </ul>
+                            
+                            <h6 class="fw-bold mb-2">Présence en ligne</h6>
+                            <div class="d-flex gap-2">
+                                {% if site_settings.instagram %}
+                                    <a href="{{ site_settings.instagram }}" target="_blank" class="btn btn-sm btn-icon btn-label-instagram"><i class="bx bxl-instagram fs-4"></i></a>
+                                {% endif %}
+                                {% if site_settings.facebook %}
+                                    <a href="{{ site_settings.facebook }}" target="_blank" class="btn btn-sm btn-icon btn-label-facebook"><i class="bx bxl-facebook fs-4"></i></a>
+                                {% endif %}
+                                {% if site_settings.behance %}
+                                    <a href="{{ site_settings.behance }}" target="_blank" class="btn btn-sm btn-icon btn-label-info"><i class="bx bxl-behance fs-4"></i></a>
+                                {% endif %}
+                                <a href="{{ url_for('admin.settings') }}" class="btn btn-sm btn-light border">Éditer le profil</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-label-instagram { background: #fee7e9; color: #e1306c; }
+    .btn-label-facebook { background: #e7f2ff; color: #3b5998; }
+    .avatar-initial { font-size: 1.2rem; }
+</style>
+{% endblock %}

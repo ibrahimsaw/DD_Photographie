@@ -1,0 +1,242 @@
+{% extends "admin/baseadmin.html" %}
+
+{% block title %}Galerie Photos{% endblock %}
+{% block name %}Galerie Photos{% endblock %}
+
+{% block contentadmin %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-lg-8 col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+                    <h5 class="mb-0"><i class="bx bx-images me-2"></i>Galerie d'exposition</h5>
+                    <span class="badge bg-label-primary">{{ photos|length }} photos</span>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    <div class="p-3 pb-0">
+                      {% for category, msg in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible shadow-none mb-2" role="alert">
+                          {{ msg }}
+                          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                <div class="card-body mt-3">
+                    <div class="row g-3" id="photo-grid">
+                        {% for photo in photos %}
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="photo-card position-relative overflow-hidden rounded border shadow-none h-100">
+                                <img src="{{ url_for('static', filename=photo.thumbnail) }}" 
+                                  class="img-fluid w-100 h-100 object-fit-cover" 
+                                  style="min-height: 120px; object-fit: cover;"
+                                  loading="lazy">
+                                
+                                <div class="photo-overlay d-flex flex-column justify-content-between p-2">
+                                    <div class="d-flex justify-content-end">
+                                      {# PROTECTION : On empêche la suppression si la photo est une couverture active #}
+                                      {% if photo.content_cover %}
+                                        <button class="btn btn-sm btn-secondary p-1 rounded-circle" disabled title="Utilisée comme couverture">
+                                          <i class="bx bx-lock-alt small"></i>
+                                        </button>
+                                      {% else %}
+                                        <form method="post" action="{{ url_for('admin.delete_photo', id=photo.id) }}" 
+                                            onsubmit="return confirm('Supprimer cette photo définitivement ?');">
+                                          <button class="btn btn-sm btn-danger p-1 rounded-circle" type="submit">
+                                            <i class="bx bx-trash small"></i>
+                                          </button>
+                                        </form>
+                                      {% endif %}
+                                    </div>
+
+                                    <div class="mt-auto">
+                                      {# CAS 1 : C'est une photo système (Blog ou Produit) #}
+                                      {% if photo.category and photo.category.name == "Contenu" %}
+                                          
+                                          {# On vérifie si elle est liée à un contenu (Blog/Produit) #}
+                                          {% if photo.content_cover %}
+                                              <div class="small fw-bold text-truncate px-2 rounded 
+                                                  {% if photo.content_cover.type == 'blog' %}
+                                                      bg-primary text-white
+                                                  {% else %}
+                                                      bg-warning text-dark
+                                                  {% endif %}">
+                                                  
+                                                  <i class="bx {% if photo.content_cover.type == 'blog' %}bx-news{% else %}bx-package{% endif %} me-1"></i>
+                                                  {{ photo.content_cover.title }}
+                                              </div>
+                                          {% else %}
+                                              {# Cas rare: c'est une photo système mais orpheline (non liée) #}
+                                              <div class="bg-label-secondary text-dark small fw-bold text-truncate px-2 rounded">
+                                                  <i class="bx bx-cog me-1"></i> Système (Libre)
+                                              </div>
+                                          {% endif %}
+
+                                      {# CAS 2 : C'est une photo de galerie classique (Portraits, Mariages...) #}
+                                      {% elif photo.category %}
+                                          <div class="text-white small fw-bold text-truncate bg-dark bg-opacity-75 px-2 rounded">
+                                            <i class="bx bx-tag me-1"></i> {{ photo.category.name }}
+                                          </div>
+
+                                      {# CAS 3 : La photo n'a aucune catégorie #}
+                                      {% else %}
+                                          <div class="text-white small fw-bold text-truncate bg-secondary px-2 rounded">
+                                              <i class="bx bx-image-alt me-1"></i> Sans catégorie
+                                          </div>
+                                      {% endif %}
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-12 text-center py-5">
+                            <i class="bx bx-image-add display-1 text-muted"></i>
+                            <p class="mt-3">Aucune photo dans la galerie.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+            <div class="card shadow-sm border-primary mb-4">
+                <div class="card-header bg-primary py-3">
+                    <h5 class="text-white mb-0"><i class="bx bx-cloud-upload me-2"></i>Ajouter des photos</h5>
+                </div>
+                <div class="card-body pt-4">
+                    <form id="photo-upload-form" method="post" enctype="multipart/form-data" action="{{ url_for('admin.photo_form') }}">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">1. Choisir les images</label>
+                            <input type="file" name="images" id="images" class="form-control" multiple accept="image/jpeg, image/png, image/webp">
+                            <div class="form-text small" id="file-info">JPG, PNG, WebP acceptés.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">2. Catégorie d'exposition</label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text"><i class="bx bx-tag"></i></span>
+                                <select name="category_id" class="form-select" required>
+                                    <option value="" disabled selected>— Sélectionner —</option>
+                                    {% for c in categories %}
+                                        {# FILTRAGE : On ne montre pas la catégorie système ici #}
+                                        {% if c.name != 'CONTENU_SYSTEME' %}
+                                            <option value="{{ c.id }}">{{ c.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <button id="upload-btn" type="submit" class="btn btn-primary w-100 py-2 shadow-sm">
+                            <i class="bx bx-upload me-1"></i> Envoyer à la galerie
+                        </button>
+                    </form>
+
+                    <div id="upload-progress" class="mt-4 d-none">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-primary small fw-bold" id="progress-text">Envoi...</span>
+                            <span class="text-muted small" id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div id="upload-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                                role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert bg-label-info border-0">
+                <h6 class="alert-heading fw-bold mb-1"><i class="bx bx-info-circle me-1"></i> Note importante</h6>
+                <p class="mb-0 small">Les photos ajoutées ici apparaîtront dans votre <strong>Portfolio public</strong> sous la catégorie choisie.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .photo-card { aspect-ratio: 1/1; transition: all 0.3s ease; background-color: #f8f9fa; }
+    .photo-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0); transition: all 0.3s ease; opacity: 0; }
+    .photo-card:hover .photo-overlay { background: rgba(0,0,0,0.4); opacity: 1; }
+    .photo-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important; }
+    .object-fit-cover { object-fit: cover; }
+</style>
+
+<script>
+    (function(){
+        const form = document.getElementById('photo-upload-form');
+        const input = document.getElementById('images');
+        const progress = document.getElementById('upload-progress');
+        const bar = document.getElementById('upload-progress-bar');
+        const percentText = document.getElementById('progress-percent');
+        const infoText = document.getElementById('progress-text');
+        const btn = document.getElementById('upload-btn');
+        const fileInfo = document.getElementById('file-info');
+
+        // Afficher le nombre de fichiers sélectionnés
+        input.addEventListener('change', function() {
+            const count = this.files.length;
+            if (count > 0) {
+                fileInfo.innerHTML = `<span class="text-primary fw-bold">${count} fichier(s) sélectionné(s)</span>`;
+            }
+        });
+
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            const files = input.files;
+            const category = form.querySelector('[name="category_id"]').value;
+
+            if(!files || files.length === 0){
+                alert('Veuillez sélectionner au moins une image.');
+                return;
+            }
+            if(!category) {
+                alert('Veuillez choisir une catégorie.');
+                return;
+            }
+
+            const fd = new FormData();
+            fd.append('category_id', category);
+
+            let validImages = 0;
+            for(let i = 0; i < files.length; i++){
+                fd.append('images', files[i]);
+                validImages++;
+            }
+
+            btn.disabled = true;
+            progress.classList.remove('d-none');
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            xhr.upload.addEventListener('progress', function(evt){
+                if(evt.lengthComputable){
+                    const percent = Math.round((evt.loaded / evt.total) * 100);
+                    bar.style.width = percent + '%';
+                    percentText.textContent = percent + '%';
+                    infoText.textContent = `Téléchargement en cours...`;
+                }
+            });
+
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4){
+                    if(xhr.status >= 200 && xhr.status < 300){
+                        window.location.reload();
+                    } else {
+                        alert('Erreur lors du téléversement. Vérifiez la taille des fichiers.');
+                        btn.disabled = false;
+                        progress.classList.add('d-none');
+                    }
+                }
+            };
+            xhr.send(fd);
+        });
+    })();
+</script>
+{% endblock %}
