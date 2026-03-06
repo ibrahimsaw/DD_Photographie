@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 .env
 instance/
+.env
+app/static/uploads
